@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<?php
+    require('lib/autoload.php');
+
+    use phpcassa\ColumnFamily;
+    use phpcassa\ColumnSlice;
+    use phpcassa\Connection\ConnectionPool;
+    use phpcassa\Index\IndexExpression;
+    use phpcassa\Index\IndexClause;
+    use cassandra\Compression;
+    use phpcassa\SystemManager;
+    use phpcassa\UUID;
+    use cassandra\ConsistencyLevel;
+   // print_r(get_declared_classes());
+    $pool = new ConnectionPool("Keyspace");
+    $servers = array("localhost:9160");
+    $pool = new ConnectionPool("smartgift", $servers);
+    $users = new ColumnFamily($pool, 'users');
+    session_start();
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+$index_exp = new IndexExpression('user_name',$username);
+$index_clause = new IndexClause(array($index_exp));
+$rows = $users->get_indexed_slices($index_clause);
+echo count($rows);
+
+
+
+
+?>
+
+<body>
+<div id="wrapper">
+<form id='login' action = "index.php" method="post">
+user name:<input type="text" name="username"><br>
+password:<input type="password" name="pw">
+<input type="submit" value="Login">
+<a href="signup.html"></a>
+</form>
+
+<?php
+
+
+?>
+</div>
+<div>
+</div>
+</div>
+</body>
+</html>
+
